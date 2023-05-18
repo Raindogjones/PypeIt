@@ -593,6 +593,50 @@ class GTCMAATSpectrograph(GTCOSIRISPlusSpectrograph):
         spec_bins = np.arange(1+num_wave) - 0.5
         return xbins, ybins, spec_bins
 
+class GTCOSIRISPlusSpectrograph_quicklook(GTCOSIRISPlusSpectrograph):
+    """
+    Child to handle windowing of OSIRIS+ quick look reduction
+    """
+    ndet = 1
+    name = 'gtc_osirisplus_ql'
+
+    def get_detector_par(self, det, hdu=None):
+        """
+        Return metadata for the selected detector.
+        Detector data from `here
+        <http://www.gtc.iac.es/instruments/osiris/>`__.
+        Args:
+            det (:obj:`int`):
+                1-indexed detector number.
+            hdu (`astropy.io.fits.HDUList`_, optional):
+                The open fits file with the raw image of interest.  If not
+                provided, frame-dependent parameters are set to a default.
+        Returns:
+            :class:`~pypeit.images.detector_container.DetectorContainer`:
+            Object with the detector metadata.
+        """
+        thisdet = super().get_detector_par(det, hdu=hdu)
+        thisdet.datasec = np.atleast_1d('[600:900,50:4096]')
+        thisdet._validate()
+        return thisdet
+
+
+    @classmethod
+    def default_pypeit_par(cls):
+        """
+        Return the default parameters to use for this instrument.
+        Returns:
+            :class:`~pypeit.par.pypeitpar.PypeItPar`: Parameters required by
+            all of ``PypeIt`` methods.
+        """
+        par = super().default_pypeit_par()
+        # Ignore these steps to speed things up a little
+        par['reduce']['skysub']['no_local_sky'] = True
+        par['reduce']['findobj']['skip_second_find'] = True
+        par['reduce']['findobj']['skip_final_global'] = True
+        par['reduce']['extraction']['skip_optimal'] = True
+        par['reduce']['findobj']['maxnumber_sci'] = 1
+        return par
 
 class GTCOSIRISSpectrograph(spectrograph.Spectrograph):
     """
