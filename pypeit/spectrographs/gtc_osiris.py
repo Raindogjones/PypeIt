@@ -197,7 +197,7 @@ class GTCOSIRISPlusSpectrograph(spectrograph.Spectrograph):
             if self.name == "gtc_maat":
                 msgs.warn("HACK FOR MAAT SIMS --- NEED TO GET SLICER SCALE FROM HEADER, IDEALLY")
                 return 0.305 / 3600.0
-            elif self.name == "gtc_osiris_plus":
+            elif self.name == "gtc_osiris_plus" or self.name == "gtc_osirisplus_ql":
                 return headarr[0]['SLITW']/3600.0   # Convert slit width from arcseconds to degrees
             else:
                 msgs.error("Could not determine slit width from header information")
@@ -616,7 +616,8 @@ class GTCOSIRISPlusSpectrograph_quicklook(GTCOSIRISPlusSpectrograph):
             Object with the detector metadata.
         """
         thisdet = super().get_detector_par(det, hdu=hdu)
-        thisdet.datasec = np.atleast_1d('[600:900,50:4096]')
+        thisdet.datasec = np.atleast_1d('[1200:1800,50:4096]')
+        thisdet.oscansec= np.atleast_1d('[1200:1800,8:46]')
         thisdet._validate()
         return thisdet
 
@@ -636,6 +637,8 @@ class GTCOSIRISPlusSpectrograph_quicklook(GTCOSIRISPlusSpectrograph):
         par['reduce']['findobj']['skip_final_global'] = True
         par['reduce']['extraction']['skip_optimal'] = True
         par['reduce']['findobj']['maxnumber_sci'] = 1
+        par['reduce']['findobj']['maxnumber_std'] = 1
+
         return par
 
 class GTCOSIRISSpectrograph(spectrograph.Spectrograph):
