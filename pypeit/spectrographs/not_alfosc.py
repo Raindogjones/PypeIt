@@ -320,6 +320,8 @@ class NOTALFOSCSpectrograph(spectrograph.Spectrograph):
                 par['calibrations']['wavelengths']['reid_arxiv'] = 'not_alfosc_grism10.fits'
             case 'Grism_11':
                 par['calibrations']['wavelengths']['reid_arxiv'] = 'not_alfosc_grism11.fits'
+            case 'Grism_14':
+                par['calibrations']['wavelengths']['reid_arxiv'] = 'not_alfosc_grism14.fits'
             case 'Grism_17':
                 par['calibrations']['wavelengths']['reid_arxiv'] = 'not_alfosc_grism17.fits'
             case 'Grism_18':
